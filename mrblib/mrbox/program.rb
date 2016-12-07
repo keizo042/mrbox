@@ -1,28 +1,16 @@
 module Mrbox
   class Program
-    conf="~/.mrbox"
-    def initalize(v)
-      @options = v.options
-      @argv = v.argv
-    end
-
-    def run
-      if @options[:help] 
+    def run(argv, options)
+      if options[:help] 
         return
       end
-      if argv.length < 1
-        puts "invaild arguments"
-        return
-      end
-      case argv[0]
-      when "bulid"
-        unless @options[:name].nil?
-          puts "set your config name"
-        end
-      when "mruby","mrbc", "mirb", "mruby-strip"
-      else
+      if argv.length < 2
+        puts "invaild arguments.."
+        Mrbox.banner
         Mrbox.help
+        return
       end
+      Mrbox::Commands.send( argv[1].to_sym, argv.slice(2, (argv.length -1)), options)
     end
   end
 end

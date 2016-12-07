@@ -5,6 +5,7 @@ def gem_config(conf)
   conf.gem File.expand_path(File.dirname(__FILE__))
   conf.gem :github => 'iij/mruby-process'
   conf.gem :mgem => 'mruby-io'
+  conf.gem :mgem => 'mruby-dir'
   conf.gem :mgem => 'mruby-sha2'
   conf.gem :mgem => 'mruby-optparse'
 end
@@ -65,34 +66,34 @@ MRuby::CrossBuild.new('i386-apple-darwin14') do |conf|
   gem_config(conf)
 end
 
-MRuby::CrossBuild.new('x86_64-w64-mingw32') do |conf|
-  toolchain :gcc
+#MRuby::CrossBuild.new('x86_64-w64-mingw32') do |conf|
+#  toolchain :gcc
+#
+#  [conf.cc, conf.linker].each do |cc|
+#    cc.command = 'x86_64-w64-mingw32-gcc'
+#  end
+#  conf.cxx.command      = 'x86_64-w64-mingw32-cpp'
+#  conf.archiver.command = 'x86_64-w64-mingw32-gcc-ar'
+#  conf.exts.executable  = ".exe"
+#
+#  conf.build_target     = 'x86_64-pc-linux-gnu'
+#  conf.host_target      = 'x86_64-w64-mingw32'
+#
+#  gem_config(conf)
+#end
 
-  [conf.cc, conf.linker].each do |cc|
-    cc.command = 'x86_64-w64-mingw32-gcc'
-  end
-  conf.cxx.command      = 'x86_64-w64-mingw32-cpp'
-  conf.archiver.command = 'x86_64-w64-mingw32-gcc-ar'
-  conf.exts.executable  = ".exe"
-
-  conf.build_target     = 'x86_64-pc-linux-gnu'
-  conf.host_target      = 'x86_64-w64-mingw32'
-
-  gem_config(conf)
-end
-
-MRuby::CrossBuild.new('i686-w64-mingw32') do |conf|
-  toolchain :gcc
-
-  [conf.cc, conf.linker].each do |cc|
-    cc.command = 'i686-w64-mingw32-gcc'
-  end
-  conf.cxx.command      = 'i686-w64-mingw32-cpp'
-  conf.archiver.command = 'i686-w64-mingw32-gcc-ar'
-  conf.exts.executable  = ".exe"
-
-  conf.build_target     = 'i686-pc-linux-gnu'
-  conf.host_target      = 'i686-w64-mingw32'
-
-  gem_config(conf)
-end
+#MRuby::CrossBuild.new('i686-w64-mingw32') do |conf|
+#  toolchain :gcc
+#
+#  [conf.cc, conf.linker].each do |cc|
+#    cc.command = 'i686-w64-mingw32-gcc'
+#  end
+#  conf.cxx.command      = 'i686-w64-mingw32-cpp'
+#  conf.archiver.command = 'i686-w64-mingw32-gcc-ar'
+#  conf.exts.executable  = ".exe"
+#
+#  conf.build_target     = 'i686-pc-linux-gnu'
+#  conf.host_target      = 'i686-w64-mingw32'
+#
+#  gem_config(conf)
+#end

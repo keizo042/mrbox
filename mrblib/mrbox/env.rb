@@ -1,17 +1,21 @@
 module Mrbox
   module Env
-    def check
-      confroot="~/.mrbox"
-      unless File.directory?(confroot)
-        Kernel.system(("mkdir " + confroot))
-      end
-      unless File.directory?(confroot + "/default")
-        Kernel.system("mkdir " + confroot + "/default")
-      end
-      unless File.directory?(confroot + "/default/mruby")
-        Kernel.system(("git clone https://github.com/mruby/mruby.git " + confroot + "/default/mruby"))
-      end
-      unless File.directory?(confroot + "/projects")
+    class << self
+      def check
+        confroot="~/.mrbox"
+        projects = confroot + "/projects"
+        unless File.directory?(File.expand_path(confroot))
+          Kernel.system(("mkdir " + confroot))
+        end
+        unless File.directory?(File.expand_path(projects))
+          Kernel.system("mkdir " + File.expand_path(projects))
+        end
+        unless File.directory?(File.expand_path(projects + "/default"))
+          Kernel.system("mkdir " + File.expand_path(projects + "/default"))
+        end
+        unless File.directory?(File.expand_path(projects + "/default/mruby"))
+          Kernel.system(("git clone https://github.com/mruby/mruby.git " + File.expand_path(projects + "/default/mruby")))
+        end
       end
     end
   end
