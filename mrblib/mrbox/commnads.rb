@@ -50,7 +50,7 @@ module Mrbox
       end
 
       def exe(name, argv)
-        Kernel.system((name + argv.map{ |v| v.to_s}.join(" ")))
+        Kernel.system((name + " " + argv.map{ |v| v.to_s}.join(" ")))
 
       end
       def mruby(argv, mrbs, options)
@@ -61,7 +61,7 @@ module Mrbox
         end
         path = @mrbox + "/projects/" + dist
         bin = File.expand_path((path + "/mruby/bin"))
-        exe((bin + "/mruby "), argv)
+        exe((bin + "/mruby "), argv + mrbs)
       end
 
       def mrbc(argv, mrbs, options)
@@ -72,7 +72,7 @@ module Mrbox
         end
         path = @mrbox + "/projects/" + dist
         bin = File.expand_path((path + "/mruby/bin"))
-        exe((bin + "/mrbc"), argv)
+        exe((bin + "/mrbc"), argv : mrbs)
       end
 
       def mirb(argv, mrbs, options)
@@ -83,7 +83,7 @@ module Mrbox
         end
         path = @mrbox + "/projects/" + dist
         bin = File.expand_path( path + "/mruby/bin")
-        exe((bin + "/mirb"), argv)
+        exe((bin + "/mirb"), argv + mrbs)
       end
 
       def help(argv, mrbs, options)

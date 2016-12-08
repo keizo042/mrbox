@@ -29,8 +29,8 @@ module Mrbox
         cmds = argv
         mrbs = []
       else
-        cmds = argv.slice(0, (sp - 1) )
-        mrbs = argv.slice( (sp + 1), (argv.length -1) )
+        cmds = argv.slice(0, sp ).to_a
+        mrbs = argv.slice( sp , (argv.length -1) ).to_a
       end
 
       parser.parse!(cmds)
