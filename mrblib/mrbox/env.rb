@@ -1,5 +1,5 @@
 module Mrbox
-  module Env
+  class Env
     class << self
       def check
         confroot="~/.mrbox"
@@ -17,6 +17,11 @@ module Mrbox
           Kernel.system(("git clone https://github.com/mruby/mruby.git " + File.expand_path(projects + "/default/mruby")))
         end
       end
+    end
+
+    def initialize
+    end
+    def setup
     end
   end
 end

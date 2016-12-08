@@ -1,21 +1,28 @@
 module Mrbox
   class Commands
     class << self
-      mrbox ="~/.mrbox"
+
       def build(argv, options)
+        mrbox ="~/.mrbox"
         if options[:name].nil?
           dist= "default"
         else
-          dist = options[:name]
+          dist = options[:name].to_s
         end
 
         path = mrbox + "/projects/" + dist
-        mruby = File.expand_path( path + "mruby")
-        if File.directory?(mruby)
+        mruby = File.expand_path( path + "/mruby")
+        unless File.directory?(mruby)
           Kernel.system("git clone http://github.com/mruby/mruby.git " + mruby)
         end
-        File.open((Dir.getwd + "/" + options[:file]))
-        Kernel.system(( "MRUBY_CONFIG=" + path + "/buld_config.rb " + mruby + "/minirake "  + "-C " + mruby ))
+        File.open((Dir.getwd + "/" + options[:file].to_s))
+
+        build_config_rb = path + "/build_config.rb"
+        if File.exists?(build_config_rb) 
+        Kernel.system(( "MRUBY_CONFIG=" + build_config_rb + " " + mruby + "/minirake "  + "-C " + mruby ))
+        else
+        Kernel.system(( mruby + "/minirake "  + "-C " + mruby ))
+        end
       end
 
       def setup(argv, options)
@@ -70,10 +77,13 @@ module Mrbox
         exe((bin + "mirb"), argv)
       end
 
-      def method_missing(method, argv, options)
-        puts "invaild arguments:#{method} " + argv.map{|v| v.to_s}.join(" ")
-        Mrbox.help
-      end
+#      def method_missing(method, argv, options)
+#        if ["build", "init", "update", "help", "mrbc", "mruby", "mirb" ].include?(method.to_s)
+#          send(method, argv, options)
+#        end
+#        puts "invaild arguments:#{method} " + argv.map{|v| v.to_s}.join(" ")
+#        Mrbox.help
+#      end
     end
   end
 end

@@ -10,7 +10,12 @@ module Mrbox
         Mrbox.help
         return
       end
-      Mrbox::Commands.send( argv[1].to_sym, argv.slice(2, (argv.length -1)), options)
+      begin
+      Mrbox::Commands.send( argv[1].to_sym, argv.slice(2, (argv.length -1)).to_a, options)
+      rescue NoMethodError => e
+        puts e
+        Mrbox.help
+      end
     end
   end
 end
