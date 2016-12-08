@@ -8,7 +8,7 @@ def __main__(argv)
   end
 
   begin
-    v, options = Mrbox::Opt.new.run argv
+    cmds, args, options = Mrbox::Opt.new.run argv
   rescue NameError => e
     p e
     return
@@ -19,7 +19,7 @@ def __main__(argv)
   end
 
   begin
-  Mrbox::Program.new.run(v, options)
+  Mrbox::Program.new.run(cmds, args, options)
   rescue => e
     puts "program"
     puts "error:#{e.class}"

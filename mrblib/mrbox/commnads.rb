@@ -3,7 +3,7 @@ module Mrbox
         @mrbox ="~/.mrbox"
     class << self
 
-      def build(argv, options)
+      def build(argv, mrbs, options)
         if options[:name].nil?
           dist= "default"
         else
@@ -34,18 +34,18 @@ module Mrbox
         end
       end
 
-      def setup(argv, options)
+      def setup(argv, mrbs, options)
         puts "not yet implement"
       end
 
-      def init(argv, options)
+      def init(argv, mrbs, options)
         dir = Dir.getwd + ".mrbox"
         Dir.mkdir(dir)
         File.open((dir + "data")) do |f|
         end
       end
 
-      def update(argv, options)
+      def update(argv, mrbs, options)
         puts "not yet implement"
       end
 
@@ -53,7 +53,7 @@ module Mrbox
         Kernel.system((name + argv.map{ |v| v.to_s}.join(" ")))
 
       end
-      def mruby(argv, options)
+      def mruby(argv, mrbs, options)
         if options[:name].nil?
           dist= "default"
         else
@@ -64,7 +64,7 @@ module Mrbox
         exe((bin + "/mruby "), argv)
       end
 
-      def mrbc(argv, options)
+      def mrbc(argv, mrbs, options)
         if options[:name].nil?
           dist= "default"
         else
@@ -75,7 +75,7 @@ module Mrbox
         exe((bin + "/mrbc"), argv)
       end
 
-      def mirb(argv, options)
+      def mirb(argv, mrbs, options)
         if options[:name].nil?
           dist= "default"
         else
@@ -86,9 +86,9 @@ module Mrbox
         exe((bin + "/mirb"), argv)
       end
 
-      def help(argv, options)
+      def help(argv, mrbs, options)
       end
-      def method_missing(method, argv, options)
+      def method_missing(method, argv, mrbs, options)
         puts "invaild commands:#{method} " + argv.map{|v| v.to_s}.join(" ")
         Mrbox.help
       end

@@ -23,9 +23,19 @@ module Mrbox
         end
       end
 
-      parser.parse!(argv)
+      sp = argv.index("--")
 
-      return argv, @options
+      if sp.nil?
+        cmds = argv
+        mrbs = []
+      else
+        cmds = argv.slice(0, (sp - 1) )
+        mrbs = argv.slice( (sp + 1), (argv.length -1) )
+      end
+
+      parser.parse!(cmds)
+
+      return cmds, mrbs, @options
     end
   end
 end
