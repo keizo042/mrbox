@@ -1,16 +1,16 @@
 module Mrbox
   class Commands
+        @mrbox ="~/.mrbox"
     class << self
 
       def build(argv, options)
-        mrbox ="~/.mrbox"
         if options[:name].nil?
           dist= "default"
         else
           dist = options[:name].to_s
         end
 
-        path = mrbox + "/projects/" + dist
+        path = @mrbox + "/projects/" + dist
         mruby = File.expand_path( path + "/mruby")
         unless File.directory?(mruby)
           Kernel.system("git clone http://github.com/mruby/mruby.git " + mruby)
@@ -50,9 +50,9 @@ module Mrbox
         else
           dist = options[:name]
         end
-        path = mrbox + "/projects/" + dist
-        bin = File.expand_path((path + "mruby/bin"))
-        exe((bin + "mruby"), argv)
+        path = @mrbox + "/projects/" + dist
+        bin = File.expand_path((path + "/mruby/bin"))
+        exe((bin + "/mruby "), argv)
       end
 
       def mrbc(argv, options)
@@ -61,7 +61,7 @@ module Mrbox
         else
           dist = options[:name]
         end
-        path = mrbox + "/projects/" + dist
+        path = @mrbox + "/projects/" + dist
         bin = File.expand_path((path + "mruby/bin"))
         exe((bin + "mrbc"), argv)
       end
@@ -72,7 +72,7 @@ module Mrbox
         else
           dist = options[:name]
         end
-        path = mrbox + "/projects/" + dist
+        path = @mrbox + "/projects/" + dist
         bin = File.expand_path( path + "mruby/bin")
         exe((bin + "mirb"), argv)
       end
