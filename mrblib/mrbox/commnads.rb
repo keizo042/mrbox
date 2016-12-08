@@ -15,9 +15,18 @@ module Mrbox
         unless File.directory?(mruby)
           Kernel.system("git clone http://github.com/mruby/mruby.git " + mruby)
         end
-        File.open((Dir.getwd + "/" + options[:file].to_s))
 
-        build_config_rb = path + "/build_config.rb"
+
+        file =(Dir.getwd + "/" + options[:file].to_s)
+        puts "reading #{file}..."
+        lines = File.open(file, "r").readlines.join
+
+        build_config_rb = File.expand_path((path + "/build_config.rb"))
+        unless lines.nil? || lines.empty?
+          puts "writing #{build_config_rb}..."
+          File.new(build_config_rb, "w").write (lines)
+        end
+
         if File.exists?(build_config_rb) 
         Kernel.system(( "MRUBY_CONFIG=" + build_config_rb + " " + mruby + "/minirake "  + "-C " + mruby ))
         else
@@ -62,8 +71,8 @@ module Mrbox
           dist = options[:name]
         end
         path = @mrbox + "/projects/" + dist
-        bin = File.expand_path((path + "mruby/bin"))
-        exe((bin + "mrbc"), argv)
+        bin = File.expand_path((path + "/mruby/bin"))
+        exe((bin + "/mrbc"), argv)
       end
 
       def mirb(argv, options)
@@ -73,8 +82,8 @@ module Mrbox
           dist = options[:name]
         end
         path = @mrbox + "/projects/" + dist
-        bin = File.expand_path( path + "mruby/bin")
-        exe((bin + "mirb"), argv)
+        bin = File.expand_path( path + "/mruby/bin")
+        exe((bin + "/mirb"), argv)
       end
 
 #      def method_missing(method, argv, options)
