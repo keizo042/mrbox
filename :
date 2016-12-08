@@ -40,7 +40,7 @@ module Mrbox
       end
 
       def init(argv, mrbs, options)
-        create_local_env
+        puts "not yet implement"
       end
 
       def update(argv, mrbs, options)
@@ -93,7 +93,7 @@ module Mrbox
       end
 
       def method_missing(method, argv, mrbs, options)
-        if method.to_s == "mruby-strip"
+        if method == "mruby-strip"
           self.send :mruby_strip, (argv + mrbs), options
         end
         puts "invaild commands:#{method} " + argv.map{|v| v.to_s}.join(" ")
@@ -107,7 +107,7 @@ module Mrbox
     def create_local_env
         dir = Dir.getwd + ".mrbox"
         Dir.mkdir(dir)
-        File.open("#{dir}/data") do |f|
+        File.open([dir , "data"].join("/")) do |f|
         end
     end
 
@@ -136,6 +136,7 @@ module Mrbox
       end
 
       def remove
+        Dir.remove(@path)
       end
 
       def run(obj, argv)

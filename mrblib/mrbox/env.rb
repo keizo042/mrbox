@@ -1,27 +1,28 @@
 module Mrbox
   class Env
-    class << self
-      def check
-        confroot="~/.mrbox"
-        projects = confroot + "/projects"
-        unless File.directory?(File.expand_path(confroot))
-          Kernel.system(("mkdir " + confroot))
-        end
-        unless File.directory?(File.expand_path(projects))
-          Kernel.system("mkdir " + File.expand_path(projects))
-        end
-        unless File.directory?(File.expand_path(projects + "/default"))
-          Kernel.system("mkdir " + File.expand_path(projects + "/default"))
-        end
-        unless File.directory?(File.expand_path(projects + "/default/mruby"))
-          Kernel.system(("git clone https://github.com/mruby/mruby.git " + File.expand_path(projects + "/default/mruby")))
-        end
-      end
+    attr_reader :mrbox, :projects
+
+    def initialize( mrbox = "~/.mrbox", repo = "https://github.com/mruby/mruby.git" )
+      @mrbox = File.expand_path(mrbox)
+      @projects = [ @mrbox ,"projects"].join("/")
+      @default = [ @projects,  "default" ].join("/")
+      @repo = repo
     end
 
-    def initialize
-    end
     def setup
+      unless File.directory?(@mrbox)
+        Dir.mkdir(@mrbox)
+      end
+      unless File.directory?(File.expand_path(@projects))
+        Dir.mkdir(@projects)
+      end
+      unless File.directory?(@default)
+        Dir.mkdir(@default)
+      end
+      default_mruby = File.expand_path( [ @default, "mruby" ].join("/"))
+      unless File.directory?(default_mruby)
+        Mrbox.git("clone", [@repo ,default_mruby].join(" "))
+      end
     end
   end
 end

@@ -1,11 +1,4 @@
 def __main__(argv)
-  begin
-    Mrbox::Env.check
-  rescue => e
-    puts "env"
-    puts e.class
-    puts e
-  end
 
   begin
     cmds, args, options = Mrbox::Opt.new.run argv
@@ -13,8 +6,6 @@ def __main__(argv)
     p e
     return
   rescue => e
-    puts "opt"
-    puts e.class
     puts e
   end
 

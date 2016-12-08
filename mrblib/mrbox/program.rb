@@ -11,11 +11,11 @@ module Mrbox
         return
       end
       begin
-      Mrbox::Commands.send( cmds[1].to_sym, cmds.slice( 2, (cmds.length -1) ).to_a, mrbs, options )
-      rescue NoMethodError => e
-        puts "invalid commans: #{cmds[1]}"
-        Mrbox.help
+        cmd = cmds[1].to_sym
+        argv = cmds[2, cmds.length - 1].to_a
+        Mrbox::Commands.send( cmd, argv , mrbs, options )
       rescue => e
+        puts "program"
         puts e
       end
     end
