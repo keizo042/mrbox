@@ -86,13 +86,12 @@ module Mrbox
         exe((bin + "/mirb"), argv)
       end
 
-#      def method_missing(method, argv, options)
-#        if ["build", "init", "update", "help", "mrbc", "mruby", "mirb" ].include?(method.to_s)
-#          send(method, argv, options)
-#        end
-#        puts "invaild arguments:#{method} " + argv.map{|v| v.to_s}.join(" ")
-#        Mrbox.help
-#      end
+      def help(argv, options)
+      end
+      def method_missing(method, argv, options)
+        puts "invaild commands:#{method} " + argv.map{|v| v.to_s}.join(" ")
+        Mrbox.help
+      end
     end
   end
 end

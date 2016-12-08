@@ -13,8 +13,10 @@ module Mrbox
       begin
       Mrbox::Commands.send( argv[1].to_sym, argv.slice(2, (argv.length -1)).to_a, options)
       rescue NoMethodError => e
-        puts e
+        puts "invalid commans: #{argv[1]}"
         Mrbox.help
+      rescue => e
+        puts e
       end
     end
   end
