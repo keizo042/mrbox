@@ -1,8 +1,11 @@
 module Mrbox
   class Opt 
+    attr_reader :options, :mrbox, :mruby
 
     def initialize
       @options = {}
+      @mrbox = []
+      @mruby = []
       @parser = OptionParser.new do |opt|
         opt.version = Mrbox::VERSION
         opt.banner = Mrbox.banner
@@ -19,16 +22,14 @@ module Mrbox
     def run(argv)
       sp = argv.index("--")
       if sp.nil?
-        cmds = argv
-        mrbs = []
+        @mrbox = argv
+        @mruby = []
       else
-        cmds = argv[0, sp - 1].to_a
-        mrbs = argv[sp + 1 ,argv.length - 1].to_a
+        @mrbox = argv[0, sp - 1].to_a
+        @mruby = argv[sp + 1 ,argv.length - 1].to_a
       end
-
-      @parser.parse!(cmds)
-
-      return cmds, mrbs, @options
+      @parser.parse!(@mrbox)
+      self
     end
   end
 end

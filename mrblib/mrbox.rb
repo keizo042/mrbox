@@ -1,16 +1,17 @@
 def __main__(argv)
 
   begin
-    cmds, args, options = Mrbox::Opt.new.run argv
+    opt = Mrbox::Opt.new.run argv
   rescue NameError => e
     p e
     return
   rescue => e
+    puts e.class
     puts e
   end
 
   begin
-  Mrbox::Program.new.run(cmds, args, options)
+  Mrbox::Program.new.run(opt)
   rescue => e
     puts "error: #{e.class}"
     puts "notice: #{e}"

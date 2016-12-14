@@ -1,13 +1,8 @@
 module Mrbox
     COMMAND = "mrbox"
-    VERSION = "0.0.1"
+    VERSION = "0.1.0"
     AUTHOR = "Kouichi Nakanishi(keizo042)"
 
-    flags = {
-      :help => {},
-      :file => {},
-      :name => {}
-    }
     subcmds = {
        :build => {},
        :mruby => {},
@@ -19,8 +14,11 @@ module Mrbox
     def banner 
       "Usage: #{COMMAND} [options] [command] ..\nAuthor:#{AUTHOR}" 
     end
+    def description
+    end
     def help
-      puts "help"
+      banner
+      description
     end
   end
 end
