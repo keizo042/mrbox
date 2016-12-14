@@ -7,16 +7,13 @@ module Mrbox
       @mrbox = []
       @mruby = []
       @parser = OptionParser.new do |opt|
-        opt.version = Mrbox::VERSION
-        opt.banner = Mrbox.banner
-
         opt.on("-f", "--file VALUE", "set your bulid config.rb. default: build_config.rb") do |v|
             @options[:file] = v
         end
         opt.on("-n", "--name=VALUE", "set build_config's name") do |v|
           @options[:name] = v
         end
-      end
+        end
     end
 
     def run(argv)

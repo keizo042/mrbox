@@ -45,6 +45,7 @@ options
 DOC
       puts text
     end
+
     def descs(key=nil)
       desc(key,CMDS[key]) if key
 
@@ -53,9 +54,10 @@ DOC
         desc(key, cmd)
       }
     end
-      def desc(key,cmd)
-        puts "#{key} -- #{cmd[:desc]}"
-      end
+
+    def desc(key,cmd)
+      puts "#{key} -- #{cmd[:desc]}"
+    end
 
     def help
       banner

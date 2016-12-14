@@ -1,5 +1,9 @@
 def __main__(argv)
 
+  if argv.length <= 1
+    Mrbox.help
+    return
+  end
   begin
     opt = Mrbox::Opt.new.run argv
   rescue NameError => e

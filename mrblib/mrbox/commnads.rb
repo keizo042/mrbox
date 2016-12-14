@@ -110,7 +110,6 @@ module Mrbox
           self.send(:mruby_strip, mrbox , mruby, options)
         end
         puts "invaild commands:#{method} " + argv.map{|v| v.to_s}.join(" ")
-        Mrbox.help
       end
     end
 
