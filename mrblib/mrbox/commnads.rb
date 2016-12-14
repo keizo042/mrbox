@@ -14,10 +14,14 @@ module Mrbox
           return
         end
 
-        file = "#{Dir.getwd}/#{f.to_s}"
+        file = File.expand_path(f)
 
         puts "reading #{file}..."
+        begin
         lines = File.open(file, "r").readlines.join
+        rescue => e
+          puts "reading error:#{e}"
+        end
 
         unless lines.nil? || lines.empty?
           puts "writing #{project.build_config_rb}..."
@@ -130,7 +134,7 @@ module Mrbox
 
       def make
         if File.exists?(@build_config_rb) 
-          cmd = "MRUBY_CONFIG=#{@build_config_rb} #{config} #{@minirake} -C #{@mruby} "
+          cmd = "MRUBY_CONFIG=#{@build_config_rb} #{@minirake} -C #{@mruby}"
           puts cmd
           Kernel.system(cmd)
         else
