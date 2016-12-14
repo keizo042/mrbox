@@ -2,11 +2,9 @@ module Mrbox
   class Commands
     class << self
 
-      def build(argv, mrbs, options)
+      def build(mrbox, mruby, options)
         project = Project.new options[:name]
-        unless File.exist?(project.mruby)
-          Mrbox.git("clone", "http://github.com/mruby/mruby.git #{project.mruby}")
-        end
+        Mrbox.git("clone http://github.com/mruby/mruby.git #{project.mruby}") unless File.exist?(project.mruby)
 
         f = options[:file]
         if f.nil?
@@ -18,9 +16,9 @@ module Mrbox
 
         puts "reading #{file}..."
         begin
-        lines = File.open(file, "r").readlines.join
-        rescue => e
-          puts "reading error:#{e}"
+          lines = File.open(file, "r").readlines.join
+        rescue 
+          return
         end
 
         unless lines.nil? || lines.empty?
@@ -31,45 +29,47 @@ module Mrbox
         project.make
       end
 
-      def setup(argv, mrbs, options)
-        env = Mrbox::Env.new
-        env.setup
+      def setup(mrbox, mruby, options)
+        Project.new.setup
       end
 
-      def config(argv, mrbs, options)
+      def config(mrbox, mruby, options)
         project = Project.new
+        project.config
       end
 
-      def init(argv, mrbs, options)
-        puts "not yet implement"
+      def init(mrbox, mruby, options)
+        env = Mrbox::Env.new(File.join(Dir.getwd,".mrbox"))
+        project = Project.new "default", env
+        project.setup
       end
 
-      def update(argv, mrbs, options)
-        proj = Project.new options[:name]
-        proj.update
+      def update(mrbox, mruby, options)
+        project = Project.new options[:name]
+        project.update
       end
 
-      def show (argv, mrbs, options)
-        Dir.entries(File.expand_path("~/.mrbox/projects")).reject{|i| i.start_with?(".") }.each { |prj|
-          puts prj
+      def show (mrbox, mruby, options)
+        Dir.entries(File.expand_path("~/.mrbox/projects")).reject{|i| i.start_with?(".") }.each { |project|
+          puts project
         }
       end
 
-      def clean(argv, mrbs, options)
+      def clean(mrbox, mruby, options)
         if options[:name].nil?
           puts "requre option ' --name' "
           return
         end
-        proj = Project.new options[:name]
-        unless proj.exists?
+        project = Project.new options[:name]
+        unless project.exist?
           puts "already removed"
           return
         end
-        unless File.directory?(path)
+        unless File.directory?(project.path)
           puts "invaild directory"
           return
         end
-        proj.remove
+        project.remove
       end
 
       def edit(argv, mrbs, options)
@@ -114,27 +114,21 @@ module Mrbox
 #      end
     end
 
-    def create_local_env
-        dir = Dir.getwd + ".mrbox"
-        Dir.mkdir(dir)
-        File.open([dir , "data"].join("/")) do |f|
-        end
-    end
-
     class Project
       attr_reader :name, :path, :mruby, :build_config_rb, :minirake ,:bin
-      def initialize(name)
+      def initialize(name = "default", env = Mrbox::Env.new)
         if name.nil?
           @name  = "default"
         else
           @name = name
         end
-        @mrbox = File.expand_path("~/.mrbox")
-        @path = "#{@mrbox}/projects/#{@name}"
-        @mruby = "#{@path}/mruby"
-        @build_config_rb = "#{@path}/build_config.rb"
-        @bin = "#{@mruby}/bin"
-        @minirake = "#{@mruby}/minirake"
+        @mrbox = env.mrbox
+        @env = env
+        @path = File.join(@mrbox, "projects", @name)
+        @mruby = File.join(@path,"mruby")
+        @build_config_rb = File.join(@path, "build_config.rb")
+        @bin = File.join(@mruby, "bin")
+        @minirake = File.join(@mruby, "minirake")
       end
 
       def make
@@ -142,7 +136,8 @@ module Mrbox
           lines = File.open("#{@mruby}/build_config.rb", "r").readlines.join
           File.new(@build_config_rb, 'w').write(lines)
         end
-        cmd = "MRUBY_CONFIG=#{@build_config_rb} #{@minirake} -C #{@mruby}"
+        ENV["MRUBY_CONFIG"] = @build_config_rb
+        cmd = "#{@minirake} -C #{@mruby}/"
         puts cmd
         Kernel.system(cmd)
       end
@@ -151,8 +146,12 @@ module Mrbox
         Dir.exist?(@path)
       end
 
+      def setup
+        @env.setup
+      end
+
       def update
-          Mrbox.git("-C #{@path} pull","")
+          Mrbox.git("-C #{@path} pull")
       end
 
       def remove
@@ -162,7 +161,10 @@ module Mrbox
       def edit editor
         Kernel.system("#{editor} #{@build_config_rb}")
       end
-
+      def config
+        puts "not yet implementation:"
+      end
+      
       def run(obj, argv)
         Kernel.system("#{@bin}/#{obj} #{argv.join(" ")}")
       end

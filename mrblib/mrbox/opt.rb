@@ -25,10 +25,12 @@ module Mrbox
         @mrbox = argv
         @mruby = []
       else
-        @mrbox = argv[0, sp - 1].to_a
+        @mrbox = argv[0, sp ].to_a
         @mruby = argv[sp + 1 ,argv.length - 1].to_a
       end
       @parser.parse!(@mrbox)
+      @mrbox.shift
+
       self
     end
   end
