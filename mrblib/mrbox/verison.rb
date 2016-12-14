@@ -3,7 +3,7 @@ module Mrbox
     VERSION = "0.1.0"
     AUTHOR = "Kouichi Nakanishi(keizo042)"
 
-    subcmds = {
+    CMDS = {
       :build => {desc: "build mruby binary."},
        :clean => {desc: "clean up mruby repo"},
        :help => {desc: "print help and version"},
@@ -22,7 +22,22 @@ module Mrbox
   class << self
     def banner 
       text=<<DOC
-Usage: #{COMMAND} [options] [command] ..\nAuthor:#{AUTHOR}
+Usage: #{COMMAND} [mrbox options] [command] [mrbox options] -- [mruby option]
+Author:#{AUTHOR}
+mruby binary sandbox manager.
+
+example:
+---
+
+$mrbox build --name hello
+$mrbox mruby --name hello -- -e 'puts "Hello mrbox World!"'
+
+---
+
+At first, you must execute 'mrbox setup'. 
+by default, it use default mruby repository.
+if you specifiy option '--name', download mruby repo into local  and manage it as this name.
+
 options
 --file (-f)     ---   using specific mruby's build_config.rb
 --name (-n)     ---   nameing mruby binary, it use when build,clean,mruby.mirb,mrbc
@@ -30,11 +45,11 @@ options
 DOC
       puts text
     end
-    def descs
-      desc(key,subcmds[key]) if key
+    def descs(key=nil)
+      desc(key,CMDS[key]) if key
 
-      subcmds.keys.each { |key|
-        cmd = subcmds[key]
+      CMDS.keys.each { |key|
+        cmd = CMDS[key]
         desc(key, cmd)
       }
     end
@@ -44,6 +59,7 @@ DOC
 
     def help
       banner
+      puts "subcommands:"
       descs
     end
   end

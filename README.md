@@ -7,9 +7,12 @@ mruby binary manager
 
 ## sample
 ```
+$mrbox -n sample build
 $mrbox -n sample mruby -- --verbose sample.rb
 ```
 
+At first.
+you nees to  execute `mrbox setup`
 you need more infomation.
 `mrbox help`
 ## Requirement
