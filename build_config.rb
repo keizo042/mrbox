@@ -6,6 +6,7 @@ def gem_config(conf)
   conf.gem :github => 'iij/mruby-process'
   conf.gem :mgem => 'mruby-io'
   conf.gem :mgem => 'mruby-dir'
+  conf.gem :mgem => 'mruby-env'
   conf.gem :mgem => 'mruby-sha2'
   conf.gem :mgem => 'mruby-optparse'
 end

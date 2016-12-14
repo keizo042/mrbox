@@ -12,8 +12,7 @@ def __main__(argv)
   begin
   Mrbox::Program.new.run(cmds, args, options)
   rescue => e
-    puts "program"
-    puts "error:#{e.class}"
-    puts "why:#{e}"
+    puts "error: #{e.class}"
+    puts "notice: #{e}"
   end
 end

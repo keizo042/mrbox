@@ -37,7 +37,7 @@ module Mrbox
       end
 
       def config(argv, mrbs, options)
-        Project.new
+        project = Project.new
       end
 
       def init(argv, mrbs, options)
@@ -50,9 +50,9 @@ module Mrbox
       end
 
       def show (argv, mrbs, options)
-        Dir.entries(File.expand_path("~/.mrbox/projects")).reject{|i| i.start_with?(".") }.each do |prj|
+        Dir.entries(File.expand_path("~/.mrbox/projects")).reject{|i| i.start_with?(".") }.each { |prj|
           puts prj
-        end
+        }
       end
 
       def clean(argv, mrbs, options)
@@ -72,24 +72,32 @@ module Mrbox
         proj.remove
       end
 
+      def edit(argv, mrbs, options)
+
+        editor = ENV['EDITOR']
+        if editor.nil?
+          editor = 'nano'
+        end
+        project =Project.new(options[:name])
+        project.edit editor
+      end
 
       def mruby(argv, mrbs, options)
-        if options[:name].nil?
-          name = "default"
-        else
-          name = options[:name]
-        end
-        Project.new name
+        project = Project.new options[:name]
         project.run( "mruby", (argv + mrbs) )
       end
 
       def mrbc(argv, mrbs, options)
-        Project.new options[:name]
+        project = Project.new options[:name]
         project.run("mrbc", (argv + mrbs) )
+      end
+      def mirb(argv, mrbs, options)
+        project = Project.new options[:name]
+        project.run("mirb", (argv + mrbs) )
       end
 
       def mruby_strip(argv, mrbs, options)
-        Project.new name options[:name]
+        project =Project.new name options[:name]
         project.run("mruby-strip", (argv + mrbs) )
       end
 
@@ -97,16 +105,13 @@ module Mrbox
         Mrbox.help
       end
 
-      def method_missing(method, argv, mrbs, options)
-        if method == "mruby-strip"
-          self.send :mruby_strip, argv , mrbs, options
-        end
-        puts "invaild commands:#{method} " + argv.map{|v| v.to_s}.join(" ")
-        Mrbox.help
-      end
-    end
-
-    def initialze
+#      def method_missing(method, argv, mrbs, options)
+#        if method == "mruby-strip"
+#          self.send(:mruby_strip, argv , mrbs, options)
+#        end
+#        puts "invaild commands:#{method} " + argv.map{|v| v.to_s}.join(" ")
+#        Mrbox.help
+#      end
     end
 
     def create_local_env
@@ -128,20 +133,18 @@ module Mrbox
         @path = "#{@mrbox}/projects/#{@name}"
         @mruby = "#{@path}/mruby"
         @build_config_rb = "#{@path}/build_config.rb"
-        @bin = "#{@path}/bin"
+        @bin = "#{@mruby}/bin"
         @minirake = "#{@mruby}/minirake"
       end
 
       def make
-        if File.exists?(@build_config_rb) 
-          cmd = "MRUBY_CONFIG=#{@build_config_rb} #{@minirake} -C #{@mruby}"
-          puts cmd
-          Kernel.system(cmd)
-        else
-          cmd = "#{@minirake} -C #{@mruby}"
-          puts cmd
-          Kernel.system(cmd)
+        if @name == "default"
+          lines = File.open("#{@mruby}/build_config.rb", "r").readlines.join
+          File.new(@build_config_rb, 'w').write(lines)
         end
+        cmd = "MRUBY_CONFIG=#{@build_config_rb} #{@minirake} -C #{@mruby}"
+        puts cmd
+        Kernel.system(cmd)
       end
 
       def exist?
@@ -156,7 +159,12 @@ module Mrbox
         Mrbox.rm("-rf", @path)
       end
 
+      def edit editor
+        Kernel.system("#{editor} #{@build_config_rb}")
+      end
+
       def run(obj, argv)
+        Kernel.system("#{@bin}/#{obj} #{argv.join(" ")}")
       end
     end
   end
