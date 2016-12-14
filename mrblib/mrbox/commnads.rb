@@ -44,10 +44,35 @@ module Mrbox
       end
 
       def update(argv, mrbs, options)
+        if options[:name]
+          Mrbox.git("-C #{File.expand_path("~/.mrbox/projects#{options[:name]}/mruby")}","")
+        else
+          Mrbox.git("-C #{File.expand_path("~/.mrbox/projects/default/mruby")} pull","")
+        end
       end
 
-      def remove(argv, mrbs, options)
+      def show (argv, mrbs, options)
+        Dir.entries(File.expand_path("~/.mrbox/projects")).each do |prj|
+          puts prj
+        end
+
+
       end
+
+      def clean(argv, mrbs, options)
+        if options[:name].nil?
+          puts "requre name"
+          return
+        end
+        path = "#{File.expand_path("~/.mrbox")}/projects/#{options[:name]}"
+        unless File.directory?(path)
+          puts "not found"
+          return
+        end
+        puts "dist:#{path}"
+        Mrbox.rm("-rf", path)
+      end
+
 
       def mruby(argv, mrbs, options)
         if options[:name].nil?
@@ -90,11 +115,12 @@ module Mrbox
       end
 
       def help(argv, mrbs, options)
+        Mrbox.help
       end
 
       def method_missing(method, argv, mrbs, options)
         if method == "mruby-strip"
-          self.send :mruby_strip, (argv + mrbs), options
+          self.send :mruby_strip, argv , mrbs, options
         end
         puts "invaild commands:#{method} " + argv.map{|v| v.to_s}.join(" ")
         Mrbox.help
