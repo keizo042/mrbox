@@ -105,13 +105,13 @@ module Mrbox
         Mrbox.help
       end
 
-#      def method_missing(method, argv, mrbs, options)
-#        if method == "mruby-strip"
-#          self.send(:mruby_strip, argv , mrbs, options)
-#        end
-#        puts "invaild commands:#{method} " + argv.map{|v| v.to_s}.join(" ")
-#        Mrbox.help
-#      end
+      def method_missing(method, mrbox, mruby, options)
+        if method == "mruby-strip"
+          self.send(:mruby_strip, mrbox , mruby, options)
+        end
+        puts "invaild commands:#{method} " + argv.map{|v| v.to_s}.join(" ")
+        Mrbox.help
+      end
     end
 
     class Project

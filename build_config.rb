@@ -3,11 +3,9 @@ def gem_config(conf)
 
   # be sure to include this gem (the cli app)
   conf.gem File.expand_path(File.dirname(__FILE__))
-  conf.gem :github => 'iij/mruby-process'
   conf.gem :mgem => 'mruby-io'
   conf.gem :mgem => 'mruby-dir'
   conf.gem :mgem => 'mruby-env'
-  conf.gem :mgem => 'mruby-sha2'
   conf.gem :mgem => 'mruby-optparse'
 end
 
