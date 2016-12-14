@@ -3,17 +3,10 @@ module Mrbox
     class << self
 
       def build(argv, mrbs, options)
-        if options[:name].nil?
-          name = "default"
-        else
-          name = options[:name].to_s
-        end
-
-        project = Project.new name
+        project = Project.new options[:name]
         unless File.exist?(project.mruby)
           Mrbox.git("clone", "http://github.com/mruby/mruby.git #{project.mruby}")
         end
-
 
         f = options[:file]
         if f.nil?
@@ -21,7 +14,7 @@ module Mrbox
           return
         end
 
-        file = [Dir.getwd ,f.to_s].join("/")
+        file = "#{Dir.getwd}/#{f.to_s}"
 
         puts "reading #{file}..."
         lines = File.open(file, "r").readlines.join
@@ -40,6 +33,7 @@ module Mrbox
       end
 
       def config(argv, mrbs, options)
+        Project.new
       end
 
       def init(argv, mrbs, options)
@@ -47,33 +41,31 @@ module Mrbox
       end
 
       def update(argv, mrbs, options)
-        if options[:name]
-          Mrbox.git("-C #{File.expand_path("~/.mrbox/projects#{options[:name]}/mruby")}","")
-        else
-          Mrbox.git("-C #{File.expand_path("~/.mrbox/projects/default/mruby")} pull","")
-        end
+        proj = Project.new options[:name]
+        proj.update
       end
 
       def show (argv, mrbs, options)
-        Dir.entries(File.expand_path("~/.mrbox/projects")).each do |prj|
+        Dir.entries(File.expand_path("~/.mrbox/projects")).reject{|i| i.start_with?(".") }.each do |prj|
           puts prj
         end
-
-
       end
 
       def clean(argv, mrbs, options)
         if options[:name].nil?
-          puts "requre name"
+          puts "requre option ' --name' "
           return
         end
-        path = "#{File.expand_path("~/.mrbox")}/projects/#{options[:name]}"
+        proj = Project.new options[:name]
+        unless proj.exists?
+          puts "already removed"
+          return
+        end
         unless File.directory?(path)
-          puts "not found"
+          puts "invaild directory"
           return
         end
-        puts "dist:#{path}"
-        Mrbox.rm("-rf", path)
+        proj.remove
       end
 
 
@@ -88,32 +80,12 @@ module Mrbox
       end
 
       def mrbc(argv, mrbs, options)
-        if options[:name].nil?
-          name = "default"
-        else
-          name = options[:name]
-        end
-        Project.new name
-        project.run("mrbc", (argv + mrbs) )
-      end
-
-      def mrbc(argv, mrbs, options)
-        if options[:name].nil?
-          name = "default"
-        else
-          name = options[:name]
-        end
-        Project.new name
+        Project.new options[:name]
         project.run("mrbc", (argv + mrbs) )
       end
 
       def mruby_strip(argv, mrbs, options)
-        if options[:name].nil?
-          name = "default"
-        else
-          name = options[:name]
-        end
-        Project.new name
+        Project.new name options[:name]
         project.run("mruby-strip", (argv + mrbs) )
       end
 
@@ -143,7 +115,11 @@ module Mrbox
     class Project
       attr_reader :name, :path, :mruby, :build_config_rb, :minirake ,:bin
       def initialize(name)
-        @name = name
+        if name.nil?
+          @name  = "default"
+        else
+          @name = name
+        end
         @mrbox = File.expand_path("~/.mrbox")
         @path = "#{@mrbox}/projects/#{@name}"
         @mruby = "#{@path}/mruby"
@@ -164,8 +140,16 @@ module Mrbox
         end
       end
 
+      def exist?
+        Dir.exist?(@path)
+      end
+
+      def update
+          Mrbox.git("-C #{@path} pull","")
+      end
+
       def remove
-        Dir.remove(@path)
+        Mrbox.rm("-rf", @path)
       end
 
       def run(obj, argv)

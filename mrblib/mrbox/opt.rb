@@ -8,11 +8,7 @@ module Mrbox
         opt.banner = Mrbox.banner
 
         opt.on("-f", "--file VALUE", "set your bulid config.rb. default: build_config.rb") do |v|
-          if v.nil? 
-            @options[:file] = "build_config.rb"
-          else
             @options[:file] = v
-          end
         end
         opt.on("-n", "--name=VALUE", "set build_config's name") do |v|
           @options[:name] = v
