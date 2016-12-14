@@ -1,18 +1,27 @@
 mrbox
 ====
 
-
 ## Descriotion
+
+mruby binary manager
 
 ## sample
 ```
+$mrbox -n sample mruby -- --verbose sample.rb
 ```
 
+you need more infomation.
+`mrbox help`
 ## Requirement
+git  
+rm  
+
+support mac, linux
 
 ## Install
 ```
-docker-compose run compile
+$docker-compose run compile
+
 ```
 
 ## LICENSE
@@ -24,5 +33,6 @@ MITL
 
 
 ## Contact me
-twitter : @keizo042
+
+twitter : @keizo042  
 mail: keizo.bookman at gmail.com  

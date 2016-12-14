@@ -39,6 +39,9 @@ module Mrbox
         env.setup
       end
 
+      def config(argv, mrbs, options)
+      end
+
       def init(argv, mrbs, options)
         puts "not yet implement"
       end
