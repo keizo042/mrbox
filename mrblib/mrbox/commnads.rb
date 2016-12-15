@@ -8,11 +8,11 @@ module Mrbox
 
         f = options[:file]
         if f.nil?
-          project.make
-          return
+          file = "#{project.mruby}/build_config.rb"
+        else
+          file = File.expand_path(f)
         end
 
-        file = File.expand_path(f)
 
         puts "reading #{file}..."
         begin
@@ -105,12 +105,12 @@ module Mrbox
         Mrbox.help
       end
 
-      def method_missing(method, mrbox, mruby, options)
-        if method == "mruby-strip"
-          self.send(:mruby_strip, mrbox , mruby, options)
-        end
-        puts "invaild commands:#{method} " + argv.map{|v| v.to_s}.join(" ")
-      end
+#      def method_missing(method, mrbox, mruby, options)
+#        if method == "mruby-strip"
+#          self.send(:mruby_strip, mrbox , mruby, options)
+#        end
+#        puts "invaild commands:#{method} " + argv.map{|v| v.to_s}.join(" ")
+#      end
     end
 
     class Project
