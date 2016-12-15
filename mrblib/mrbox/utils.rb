@@ -5,9 +5,7 @@ module Mrbox
     end
 
     def rm(opt , dist)
-      puts IO.open("rm #{opt} #{dist}","r+")  do |io|
-        io.gets
-      end
+      Kernel.system("rm #{opt} #{dist}")
     end
   end
 end

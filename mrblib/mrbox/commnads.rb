@@ -166,28 +166,11 @@ module Mrbox
       
       def run(obj, argv)
         cmd= "#{@bin}/#{obj}" 
-        argument = "#{argv.map { |item| item.gsub("'", "\\'") }.join(" ")}"
-        option = {}
-        parser = OptionParser.new do  |p|
-          p.on("-b") do
-            options[:binary] = true
-          end
-          p.on("-c") do 
-            options[:syntax] = true
-          end
-          p.on("-e VALUE") do |v|
-            options[:script] = v
-          end
-          p.on("--verbose") do 
-          end
-          p.on("--version") do
-          end
-          p.on("--copyright") do
-          end
-        end
-        IO.popen(cmd, "r+", {:commandline => argument} ) do |io|
-          #io.puts argument
-          io.read
+        i = argv.index("-e")
+        argv[i + 1] = "'#{argv[i + 1]}'" unless i.nil?
+        puts "execute: #{cmd} #{argv.join(" ")}.."
+        IO.popen("#{cmd} #{argv.join(" ")}" ,"r+") do |io|
+          puts io.read
         end
       end
     end
