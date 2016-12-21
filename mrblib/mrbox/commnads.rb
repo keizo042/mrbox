@@ -135,8 +135,7 @@ module Mrbox
           lines = File.open("#{@mruby}/build_config.rb", "r").readlines.join
           File.new(@build_config_rb, 'w').write(lines)
         end
-        ENV["MRUBY_CONFIG"] = @build_config_rb
-        cmd = "#{@minirake} -C #{@mruby}/"
+        cmd = "MRUBY_CONFIG=#{@build_config_rb} #{@minirake} -C #{@mruby}/"
         puts cmd
         Kernel.system(cmd)
       end
