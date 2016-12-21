@@ -13,18 +13,20 @@ module Mrbox
           file = File.expand_path(f)
         end
 
+        unless File.exist?(project.build_config_rb)
+          puts "reading #{file}..."
+          begin
+            lines = File.open(file, "r").readlines.join
+          rescue 
+            return
+          end
 
-        puts "reading #{file}..."
-        begin
-          lines = File.open(file, "r").readlines.join
-        rescue 
-          return
+          unless lines.nil? || lines.empty?
+            puts "writing #{project.build_config_rb}..."
+            File.new(project.build_config_rb, "w").write (lines)
+          end
         end
 
-        unless lines.nil? || lines.empty?
-          puts "writing #{project.build_config_rb}..."
-          File.new(project.build_config_rb, "w").write (lines)
-        end
 
         project.make
       end
@@ -131,10 +133,6 @@ module Mrbox
       end
 
       def make
-        if @name == "default"
-          lines = File.open("#{@mruby}/build_config.rb", "r").readlines.join
-          File.new(@build_config_rb, 'w').write(lines)
-        end
         cmd = "MRUBY_CONFIG=#{@build_config_rb} #{@minirake} -C #{@mruby}/"
         puts cmd
         Kernel.system(cmd)
