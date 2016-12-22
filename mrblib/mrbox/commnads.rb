@@ -74,45 +74,48 @@ module Mrbox
         project.remove
       end
 
-      def edit(argv, mrbs, options)
+      def edit(argv, mruby, options)
 
         editor = ENV['EDITOR']
         if editor.nil?
           editor = 'nano'
         end
-        project =Project.new(options[:name])
+        project = Project.new(options[:name])
+        if argv.length > 1
+          project.build_config_rb = "#{project.path}/#{argv[0]}"
+        end
         project.edit editor
       end
 
-      def mruby(argv, mrbs, options)
+      def mruby(argv, mruby, options)
         project = Project.new options[:name]
-        project.run( "mruby", (argv + mrbs) )
+        project.run( "mruby",  mruby )
       end
 
-      def mrbc(argv, mrbs, options)
+      def mrbc(argv, mruby, options)
         project = Project.new options[:name]
-        project.run("mrbc", (argv + mrbs) )
+        project.run("mrbc", mruby )
       end
-      def mirb(argv, mrbs, options)
+      def mirb(argv, mruby, options)
         project = Project.new options[:name]
-        project.run("mirb", (argv + mrbs) )
+        project.run("mirb", mruby )
       end
 
       def mruby_strip(argv, mrbs, options)
         project =Project.new name options[:name]
-        project.run("mruby-strip", (argv + mrbs) )
+        project.run("mruby-strip",  mrbs)
       end
 
       def help(argv, mrbs, options)
         Mrbox.help
       end
 
-#      def method_missing(method, mrbox, mruby, options)
-#        if method == "mruby-strip"
-#          self.send(:mruby_strip, mrbox , mruby, options)
-#        end
-#        puts "invaild commands:#{method} " + argv.map{|v| v.to_s}.join(" ")
-#      end
+      def method_missing(method, mrbox, mruby, options)
+        if method == "mruby-strip"
+          #self.send(:mruby_strip, mrbox , mruby, options)
+        end
+        puts "invaild commands:#{method} " + mrbox.map{|v| v.to_s}.join(" ")
+      end
     end
 
     class Project
@@ -147,7 +150,7 @@ module Mrbox
       end
 
       def update
-          Mrbox.git("-C #{@path} pull")
+          Mrbox.git("-C #{@mruby} pull")
       end
 
       def remove
