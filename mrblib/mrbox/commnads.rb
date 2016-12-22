@@ -102,12 +102,17 @@ module Mrbox
       end
 
       def mruby_strip(argv, mrbs, options)
-        project =Project.new name options[:name]
+        project = Project.new options[:name]
         project.run("mruby-strip",  mrbs)
       end
 
       def help(argv, mrbs, options)
         Mrbox.help
+      end
+
+      def git(mrbox, mruby, options)
+        project = Project.new options[:name]
+        project.git argv
       end
 
       def method_missing(method, mrbox, mruby, options)
@@ -162,6 +167,9 @@ module Mrbox
       end
       def config
         puts "not yet implementation:"
+      end
+
+      def git
       end
       
       def run(obj, argv)
